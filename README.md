@@ -2,6 +2,8 @@
 
 Random fact generator website built in flask with backend in Azure SQL.
 
+![Alt Text](https://github.com/JanBenisek/AzureDB/blob/master/example.gif)
+
 ### How get the infrastructure running:
   - With the code below, we create resource group and create a SQL server with firewall
   - Default firewall settings and never let anyone in, so we need to add our IP
