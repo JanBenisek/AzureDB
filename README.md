@@ -9,31 +9,31 @@ Random fact generator website built in flask with backend in Azure SQL.
   - Default firewall settings and never let anyone in, so we need to add our IP
   - Don't know yours? Try `curl ipinfo.io/ip`
 
-<code>
-az login <br>
-$location="westeurope" <br>
-$resource="resource-randomfacts" <br>
-$server="server-randomfacts" <br>
-$database="database-randomfacts" <br>
+```
+az login 
+$location="westeurope" 
+$resource="resource-randomfacts" 
+$server="server-randomfacts"
+$database="database-randomfacts"
 
-$login="azureadmin" <br>
-$password="Password123!" <br>
+$login="azureadmin"
+$password="Password123!"
 
-$startIP=[your-ip] <br>
-$endIP=[your-ip] <br>
+$startIP=[your-ip]
+$endIP=[your-ip] 
 
-echo "Creating $resource..." <br>
-az group create --name $resource --location "$location" <br>
+echo "Creating $resource..."
+az group create --name $resource --location "$location"
 
-echo "Creating $server in $location..." <br>
-az sql server create --name $server --resource-group $resource --location "$location" --admin-user $login --admin-password $password <br>
+echo "Creating $server in $location..."
+az sql server create --name $server --resource-group $resource --location "$location" --admin-user $login --admin-password $password
 
-echo "Configuring firewall..." <br>
-az sql server firewall-rule create --resource-group $resource --server $server -n AllowYourIp --start-ip-address $startIP --end-ip-address $endIP <br>
+echo "Configuring firewall..."
+az sql server firewall-rule create --resource-group $resource --server $server -n AllowYourIp --start-ip-address $startIP --end-ip-address $endIP
 
-echo "Creating $database on $server..." <br>
+echo "Creating $database on $server..."
 az sql db create --resource-group $resource --server $server --name $database --edition Basic --capacity 5 --zone-redundant false
-</code>
+```
 
 ### Query the DB:
   - Use the `sqlcmd` utility:
