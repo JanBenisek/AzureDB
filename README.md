@@ -49,6 +49,7 @@ az sql db create --resource-group $resource --server $server --name $database --
 
 ### Run the app
   - Localy, just run `python app.py` and become the coolest person in the room, instantly!
+  - Or build a Web App in Azure and deploy it with Kudu
 
 ### Useful resources:
   - https://getbootstrap.com/2.3.2/examples/justified-nav.html
