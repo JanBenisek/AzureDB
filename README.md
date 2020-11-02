@@ -1,26 +1,54 @@
-# Azure storage webapp
+# Azure Random Facts Generator
 
-Simple cloud storage website built with Flask and Azure blob storage.
+Random fact generator website built in flask with backend in Azure SQL.
 
-### How to start:
-  - install `az` cli on your PC
-  - create a resource group
-  - add a storage account
-    - `az storage account create --kind StorageV2 --resource-group [group-name] --location centralus --name [storage-name]`
-  - add a container
-    -  `az storage container create -n [container-name] --fail-on-exist --connection-string [conn-string]`
-  - give public read access to the container otherwise users cannot download the files
-    - `az storage container set-permission --name [container-name] --account-name [storage-name] --public-access container --account-key [storage-access-key] --auth-mode key`
-  - make sure that `config.py` file is modified accordingly (azure account and container)
-  - connection keys (connection string for azure and secret key for flask) are stored in `connection_secrets.py` which you need to supplement
-  - run `app.py` and enjoy the page
+### How get the infrastructure running:
+  - With the code below, we create resource group and create a SQL server with firewall
+  - Default firewall settings and never let anyone in, so we need to add our IP
+  - Don't know yours? Try `curl ipinfo.io/ip`
 
+<code>
+az login <br>
+$location="westeurope" <br>
+$resource="resource-randomfacts" <br>
+$server="server-randomfacts" <br>
+$database="database-randomfacts" <br>
+
+$login="azureadmin" <br>
+$password="Password123!" <br>
+
+$startIP=[your-ip] <br>
+$endIP=[your-ip] <br>
+
+echo "Creating $resource..." <br>
+az group create --name $resource --location "$location" <br>
+
+echo "Creating $server in $location..." <br>
+az sql server create --name $server --resource-group $resource --location "$location" --admin-user $login --admin-password $password <br>
+
+echo "Configuring firewall..." <br>
+az sql server firewall-rule create --resource-group $resource --server $server -n AllowYourIp --start-ip-address $startIP --end-ip-address $endIP <br>
+
+echo "Creating $database on $server..." <br>
+az sql db create --resource-group $resource --server $server --name $database --edition Basic --capacity 5 --zone-redundant false
+</code>
+
+### Query the DB:
+  - Use the `sqlcmd` utility:
+    - `sqlcmd -S "$server.database.windows.net" -d $database -U $login -P $password`
+
+### Import data
+  - We first create the tables (in our case, just one with all the random facts)
+    - Do not use `;` and always use GO
+    - `CREATE TABLE randomFacts(fact_key VARCHAR(50) NOT NULL, fact_source VARCHAR(500) NOT NULL, fact_text VARCHAR(500) NOT NULL)`
+    - `GO`
+  - After we can do the import:
+    - `bcp "$database.dbo.randomFacts" in "C:/Users/benis/GitHub/AzureDB/data/facts.csv" -S "$server.database.windows.net" -U $login -P $password -q -c -t ";"`
+
+### Run the app
+  - Localy, just run `python app.py` and become the coolest person in the room, instantly!
 
 ### Useful resources:
-  - https://flask-dropzone.readthedocs.io/en/latest/
-  - https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
-  - https://docs.faculty.ai/user-guide/apis/flask_apis/flask_file_upload_download.html
-  - https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/
-  - https://hackersandslackers.com/flask-jinja-templates
-  - https://blog.miguelgrinberg.com/post/handling-file-uploads-with-flask
-  - https://stackoverflow.com/questions/58900507/upload-and-delete-azure-storage-blob-using-azure-storage-blob-or-azure-storage/58900508#58900508
+  - https://getbootstrap.com/2.3.2/examples/justified-nav.html
+  - https://www.tutorialspoint.com/flask/flask_quick_guide.htm
+  - https://docs.microsoft.com/en-us/sql/tools/sqlcmd-utility?view=sql-server-ver15

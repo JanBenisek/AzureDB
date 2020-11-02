@@ -1,0 +1,163 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+<style>
+h2 {text-align: center;}
+
+.styled-table {
+    border-radius: 13px;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: "Helvetica Neue", sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    margin: 0px auto;
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 13px;
+}
+
+.styled-table td {
+    font-size:30px;
+}
+
+.styled-table th {
+    font-size:20px;
+}
+
+p {text-align: center;}
+
+* {
+    font-family: "Helvetica Neue", sans-serif;
+    }
+
+.button {
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  background-color: #009879;
+  color: #ffffff;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #009879;
+  color: white;
+  text-align: center;
+}
+
+</style>
+</head>
+
+<h2 style="font-size:90px"><b>Random fact generator</b></h2>
+<p style="font-size:30px">Entertain your friends with these super cool random facts.</p>
+
+<br>
+<br>
+
+<div class="column">
+<center>
+  <div>
+    <form method ="post" action="/">
+          <button type="submit" name="cat_button" value="history"
+                  class="button buttonH">History</button>
+
+          <button type="submit" name="cat_button" value="space"
+                  class="button buttonS">Space</button>
+
+          <button type="submit" name="cat_button" value="food"
+                  class="button buttonF">Food</button>
+
+          <button type="submit" name="cat_button" value="technology"
+                  class="button buttonT">Technology</button>
+
+          <button type="submit" name="cat_button" value="usr"
+                  class="button buttonU">from visitors</button>
+    </form>
+  </div>
+</center>
+</div>
+
+<br>
+<br>
+
+<p style="font-size:25px">Did you know, that...</p>
+
+<table class="styled-table">
+  <thead>
+      <tr>
+          <th>{{category}}</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>{{randomFact}}</td>
+      </tr>
+  </tbody>
+</table>
+
+<img src="../assets/spongebob.png" alt="image" style="float:left;width:250px;height:220px;">
+<img src="../assets/such_wow.jpg" alt="image" style="float:right;width:250px;height:220px;">
+
+<br>
+<br>
+
+<p style="font-size:25px">You can even add your own facts!</p>
+
+<div>
+  <center>
+  <form action='/insertFact' method = "post">
+    <input type = "text" name = "input_random_fact" style="height: 45px; width:300px"/>
+
+    <select name="select_category" method="GET" action="/"
+            style="min-height:50px;min-width:100px;">
+      {% for category in cat_list %}
+          <option value="{{category}}" SELECTED>{{category}} </option>"
+      {% endfor %}
+      </select>
+
+      <!--<input type="submit" value="Submit">-->
+      <button type="submit" name="insert_fact" value="insert"
+            class="button buttonU">Submit</button>
+  </form>
+  </center>
+</div>
+
+<div>
+  <center>
+<p><b>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for e_cate, message in messages %}
+    <div class="{{ e_cate }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</b>
+</p>
+</center>
+</div>
+
+
+<div class="footer">
+  <p>Made with love and <img src="../assets/azure.png" style="width:30px;height:20px"></p>
+</div>
+
+</html>
